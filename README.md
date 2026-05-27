@@ -13,9 +13,9 @@ markdown
 
 ## 🏗️ System Architecture
 
-ModAAegis operates entirely on the edge, intercepting Reddit's event pipeline before spam can affect the community. 
+ModAAegis operates entirely on the edge, intercepting Reddit's event pipeline before spam can affect the community. It is a fully functional, real-world application with zero simulated features.
 
-mermaid
+```mermaid
 graph TD
     A((User Comments)) -->|onCommentSubmit| B[Devvit / Hono Gateway]
     B --> C{Safe Harbor Check}
@@ -36,15 +36,13 @@ graph TD
 
 ## ⚙️ Core Engineering Features
 
-ModAAegis is a 100% functional, production-ready tool designed to handle live API events at scale.
-
 ### 1. The Ghost Autopilot (24/7 Automation)
 
-A background worker that intercepts the `onCommentSubmit` webhook. If the live velocity radar crosses the community's custom threshold, it autonomously executes **Protocol Alpha (Lockdown)** and dispatches an emergency ModMail. This secures the subreddit instantly, even when the entire moderation team is asleep.
+A background worker that intercepts the `onCommentSubmit` webhook. If the live velocity radar crosses the community's custom threshold, it autonomously executes Protocol Alpha (Lockdown) and dispatches an emergency ModMail. This secures the subreddit instantly, even when the entire moderation team is asleep.
 
 ### 2. Heuristic Threat Scoring
 
-The engine evaluates context, not just volume. When a spam burst occurs, the system calculates a dynamic threat weight based on the user's historical data.
+The engine evaluates context, not just volume. When a spam burst occurs, the system calculates a dynamic threat weight based on the user's historical data, equipped with strict TypeScript guard clauses to prevent crashes on shadowbanned entities.
 
 ```mermaid
 flowchart LR
@@ -59,7 +57,7 @@ flowchart LR
 
 ### 3. Enterprise RBAC Security
 
-All manual defense execution routes (`/api/lockdown`, `/api/purge`) are protected by strictly enforced **Role-Based Access Control**. The backend verifies live moderator clearance before processing any payload, ensuring malicious actors cannot trigger your community defenses via network sniffing.
+All manual defense execution routes (`/api/lockdown`, `/api/purge`) are protected by strictly enforced Role-Based Access Control. The backend verifies live moderator clearance before processing any payload, ensuring malicious actors cannot trigger your community defenses via network sniffing.
 
 ### 4. Native Context Integration
 
@@ -73,7 +71,7 @@ Framework: `@devvit/web`
 Frontend: React, TailwindCSS (Real-time polling dashboard)
 Backend: Hono (Routing & Middleware)
 State Management: Redis (Live velocity telemetry tracking)
-Language: TypeScript (Strictly typed with advanced guard clauses for shadowbanned/deleted entities)
+Language: TypeScript
 
 ---
 
@@ -101,15 +99,15 @@ npm run login
 
 ### 3. Compile & Deploy
 
-Upload the application to the Reddit server environment and install it to your designated test subreddit:
+Upload the application to the Reddit server environment and install it to the production testing ground:
 
 ```bash
 npx devvit upload
-npx devvit install r/YourTestSubreddit
+npx devvit install r/AegisCommand_Prod
 
 ```
 
-### 4. Configuration parameters
+### 4. Configuration Parameters
 
 Navigate to your Subreddit's Mod Tools -> Apps -> modaegis-v2.
 Configure your High Threat Threshold (triggers the Autopilot) and Trusted Users Allowlist (bypasses the Heuristic Engine) to define the engine's operational parameters.
@@ -126,13 +124,8 @@ Protocol Omega (Reset): Flushes the Redis velocity tracking database and resets 
 
 ---
 
-*Engineered for scale. Built for the frontlines of community moderation.*
+Engineered for scale. Built for the frontlines of community moderation.
 
 ```
-
-### Why this is a game-changer:
-When you paste this into GitHub, the mermaid  blocks will automatically transform into beautiful, stylized flowcharts directly on the page. 
-
-It makes the README incredibly dense with information, highly professional, and visually stunning. Once you have this saved, grab that GitHub link and drop it into your Devpost submission! You are fully locked and loaded.
 
 ```
