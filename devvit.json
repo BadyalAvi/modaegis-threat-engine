@@ -1,0 +1,73 @@
+{
+  "$schema": "https://developers.reddit.com/schema/config-file.v1.json",
+  "name": "modaegis-v2",
+  "post": {
+    "dir": "dist/client",
+    "entrypoints": {
+      "default": {
+        "inline": true,
+        "entry": "splash.html"
+      },
+      "game": {
+        "entry": "game.html"
+      }
+    }
+  },
+  "server": {
+    "dir": "dist/server",
+    "entry": "index.cjs"
+  },
+  "menu": {
+    "items": [
+      {
+        "label": "Create a new post",
+        "description": "modaegis-core",
+        "location": "subreddit",
+        "forUserType": "moderator",
+        "endpoint": "/internal/menu/post-create"
+      },
+      {
+        "label": "Example form",
+        "description": "Show a simple form",
+        "location": "subreddit",
+        "forUserType": "moderator",
+        "endpoint": "/internal/menu/example-form"
+      },
+      {
+        "label": "🛡️ ModAAegis: Scan User",
+        "description": "Run a heuristic threat scan on this user.",
+        "location": "comment",
+        "forUserType": "moderator",
+        "endpoint": "/internal/menu/scan-user"
+      }
+    ]
+  },
+  "forms": {
+    "exampleForm": "/internal/form/example-submit"
+  },
+  "triggers": {
+    "onAppInstall": "/internal/triggers/on-app-install",
+    "onCommentSubmit": "/internal/triggers/comment-submit"
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build"
+  },
+  "dev": {
+    "subreddit": "modaegis_v2_dev"
+  },
+  "settings": {
+    "subreddit": {
+      "threat_threshold": {
+        "type": "number",
+        "label": "High Threat Threshold (Comments/Min)",
+        "helpText": "Triggers the lockdown protocols when comment velocity exceeds this number."
+      },
+      "trusted_allowlist": {
+        "type": "string",
+        "label": "Trusted Users Allowlist",
+        "helpText": "Comma-separated list of usernames (e.g., AutoModerator, devvit-dev-bot) that ModAAegis will completely ignore."
+      }
+    }
+  }
+}
