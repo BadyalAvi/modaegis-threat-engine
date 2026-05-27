@@ -11,33 +11,80 @@ markdown
 
 ---
 
-## ⚙️ Core Architecture
+## 🏗️ System Architecture
 
-ModAAegis is a 100% functional, production-ready tool designed to handle live API events at scale. It does not rely on simulations.
+ModAAegis operates entirely on the edge, intercepting Reddit's event pipeline before spam can affect the community. 
 
-🧠 Heuristic Threat Scoring:** Evaluates context, not just volume. The engine queries live Reddit data (account age, karma) during a spam burst. Suspicious accounts receive dynamic threat-weight multipliers to trigger defenses faster, while trusted entities are bypassed via a custom Safe Harbor Allowlist.
-👻 The Ghost Autopilot:** A 24/7 background worker that intercepts the `onCommentSubmit` webhook. If the live velocity radar crosses the community's custom threshold, it autonomously executes Protocol Alpha (Lockdown) and dispatches emergency ModMail, securing the subreddit even when moderators are offline.
-🔒 Enterprise RBAC Security:** All defense execution routes (`/api/lockdown`, `/api/purge`) are protected by strictly enforced Role-Based Access Control. The backend verifies live moderator clearance before processing any payload, dropping unauthorized requests instantly.
-🎯 Native UI Integration:** Injects a custom `🛡️ ModAAegis: Scan User` button directly into Reddit's native comment overflow menu, allowing moderators to trigger private heuristic intelligence reports without leaving their workflow.
+mermaid
+graph TD
+    A((User Comments)) -->|onCommentSubmit| B[Devvit / Hono Gateway]
+    B --> C{Safe Harbor Check}
+    C -->|Allowlisted| D[Bypass Radar]
+    C -->|Unknown User| E[Heuristic Threat Engine]
+    E -->|Query Age & Karma| F[(Reddit Database)]
+    F -->|Return Context| E
+    E -->|Calculate Weight| G[(Redis Velocity Tracker)]
+    G --> H{Threshold Crossed?}
+    H -->|Yes| I[Ghost Autopilot Engages]
+    H -->|No| J[Continue Monitoring]
+    I --> K[Protocol Alpha: Auto-Lock]
+    I --> L[Dispatch ModMail Alert]
+
+```
 
 ---
 
-## 🛠️ Tech Stack
+## ⚙️ Core Engineering Features
 
-Framework:** `@devvit/web`
-Frontend:** React, TailwindCSS
-Backend:** Hono (Routing), Node.js
-State Management:** Redis (Live velocity tracking)
+ModAAegis is a 100% functional, production-ready tool designed to handle live API events at scale.
+
+### 1. The Ghost Autopilot (24/7 Automation)
+
+A background worker that intercepts the `onCommentSubmit` webhook. If the live velocity radar crosses the community's custom threshold, it autonomously executes **Protocol Alpha (Lockdown)** and dispatches an emergency ModMail. This secures the subreddit instantly, even when the entire moderation team is asleep.
+
+### 2. Heuristic Threat Scoring
+
+The engine evaluates context, not just volume. When a spam burst occurs, the system calculates a dynamic threat weight based on the user's historical data.
+
+```mermaid
+flowchart LR
+    Start([Evaluate Target]) --> AgeKarma{Age < 7d OR Karma < 0?}
+    AgeKarma -->|Yes| Multiplier[Threat Weight = 3x]
+    AgeKarma -->|No| Normal[Threat Weight = 1x]
+    Multiplier --> DB[(Update Redis State)]
+    Normal --> DB
+    DB --> Exec{Trigger Defenses?}
+
+```
+
+### 3. Enterprise RBAC Security
+
+All manual defense execution routes (`/api/lockdown`, `/api/purge`) are protected by strictly enforced **Role-Based Access Control**. The backend verifies live moderator clearance before processing any payload, ensuring malicious actors cannot trigger your community defenses via network sniffing.
+
+### 4. Native Context Integration
+
+ModAAegis injects a custom `🛡️ Scan User` button directly into Reddit's native comment overflow menu (`...`). Moderators can run heuristic intelligence reports on suspicious users without ever leaving their workflow, mapping directly to Reddit's ecosystem UI.
+
+---
+
+## 🛠️ Tech Stack & Implementation
+
+Framework: `@devvit/web`
+Frontend: React, TailwindCSS (Real-time polling dashboard)
+Backend: Hono (Routing & Middleware)
+State Management: Redis (Live velocity telemetry tracking)
 Language: TypeScript (Strictly typed with advanced guard clauses for shadowbanned/deleted entities)
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Deployment Guide
 
-Ensure you have Node 22+ installed before running the environment.
+Ensure you have Node 22+ installed before initializing the environment.
 
 ### 1. Installation
-Clone the repository and install the dependencies:
+
+Clone the repository and install the required dependencies:
+
 ```bash
 npm install
 
@@ -45,16 +92,16 @@ npm install
 
 ### 2. Authentication
 
-Log your Devvit CLI into your Reddit account:
+Log your Devvit CLI into your Reddit account to establish the server connection:
 
 ```bash
 npm run login
 
 ```
 
-### 3. Deployment
+### 3. Compile & Deploy
 
-Upload the application to the Reddit server environment and install it to your test subreddit:
+Upload the application to the Reddit server environment and install it to your designated test subreddit:
 
 ```bash
 npx devvit upload
@@ -62,20 +109,20 @@ npx devvit install r/YourTestSubreddit
 
 ```
 
-### 4. Configuration
+### 4. Configuration parameters
 
-Navigate to your Subreddit's Mod Tools -> Apps -> `modaegis`.
-Configure your **High Threat Threshold** and **Trusted Users Allowlist** to define the engine's operational parameters.
+Navigate to your Subreddit's Mod Tools -> Apps -> modaegis-v2.
+Configure your High Threat Threshold (triggers the Autopilot) and Trusted Users Allowlist (bypasses the Heuristic Engine) to define the engine's operational parameters.
 
 ---
 
 ## 🛡️ Manual Defense Protocols (Command Dashboard)
 
-When under active attack, moderators can deploy the live React dashboard to visualize the Redis threat counter in real-time.
+When under active attack, moderators can open the live React dashboard to visualize the Redis threat counter in real-time.
 
-Protocol Alpha: Instantly locks the active thread and leaves an official mod-distinguished audit trail.
-Protocol Beta: Surgically purges the originating attacker's payloads and issues a permanent ban.
-Protocol Omega: Flushes the Redis velocity tracking database and resets the radar.
+Protocol Alpha (Lockdown): Instantly locks the active thread and generates a distinguished audit trail comment to ensure community transparency.
+Protocol Beta (Purge): Surgically purges the originating attacker's payloads and issues a permanent ban.
+Protocol Omega (Reset): Flushes the Redis velocity tracking database and resets the radar to a neutral state.
 
 ---
 
@@ -83,11 +130,9 @@ Protocol Omega: Flushes the Redis velocity tracking database and resets the rada
 
 ```
 
-### Step 2: Commit the Changes
-Scroll down to the bottom of the GitHub page and click the green Commit changes button. 
+### Why this is a game-changer:
+When you paste this into GitHub, the mermaid  blocks will automatically transform into beautiful, stylized flowcharts directly on the page. 
 
-This README completely transforms how your project is perceived. It outlines your tech stack cleanly, highlights the fact that this is a real-world application, and breaks down the advanced backend logic perfectly for the judges. 
-
-Go ahead and lock this in, then drop that GitHub link into your Devpost submission!
+It makes the README incredibly dense with information, highly professional, and visually stunning. Once you have this saved, grab that GitHub link and drop it into your Devpost submission! You are fully locked and loaded.
 
 ```
